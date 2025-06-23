@@ -1,8 +1,53 @@
+"use client"
+
 import Image from "next/image"
 import Navigation from "../../components/navigation"
 import FooterMinimal from "../../components/footer-minimal"
+import { useState } from "react"
+import React from "react"
 
 export default function WritingABookPage() {
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Check localStorage on component mount
+  React.useEffect(() => {
+    const hasSubmitted = localStorage.getItem("waitlistSubmitted")
+    if (hasSubmitted) {
+      setIsSubmitted(true)
+    }
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      })
+
+      if (response.ok) {
+        localStorage.setItem("waitlistSubmitted", "true")
+        setIsSubmitted(true)
+        form.reset()
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Something went wrong.")
+      }
+    } catch (error) {
+      console.error("Form error:", error)
+      alert("⚠️ Oops! Something went wrong.\nPlease try again or message me directly.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
@@ -154,16 +199,37 @@ export default function WritingABookPage() {
                 Be the first to read "AI HOOKED" when it's released. Join the waitlist for exclusive updates and early
                 access opportunities.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 lg:justify-start justify-center">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="px-4 py-3 bg-gray-950 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 w-full sm:w-64"
-                />
-                <button className="bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 text-white font-medium px-6 py-3 rounded-lg hover:from-cyan-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 w-full sm:w-auto shadow-lg hover:shadow-xl">
-                  Join Waitlist
-                </button>
-              </div>
+              
+              {isSubmitted ? (
+                <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4 text-green-300">
+                  <p className="font-medium">🎉 Thanks for joining the waitlist!</p>
+                  <p className="text-sm mt-1">You'll be the first to know when the book is ready.</p>
+                </div>
+              ) : (
+                <>
+                  <form onSubmit={handleSubmit} action="https://formspree.io/f/xpwryyyp" method="POST" id="waitlistForm" className="waitlist-form flex flex-col sm:flex-row gap-3 lg:justify-start justify-center">
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      name="email"
+                      required
+                      className="email-input px-4 py-3 bg-gray-950 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 w-full sm:w-64"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="waitlist-btn bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 text-white font-medium px-6 py-3 rounded-lg hover:from-cyan-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 w-full sm:w-auto shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? "Submitting..." : "Join Waitlist"}
+                    </button>
+                  </form>
+                  
+                  <div id="thankYouMessage" style={{ display: 'none' }} className="bg-green-900/20 border border-green-500/30 rounded-lg p-4 text-green-300">
+                    <p className="font-medium">🎉 Thanks for joining the waitlist!</p>
+                    <p className="text-sm mt-1">You'll be the first to know when the book is ready.</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -171,6 +237,63 @@ export default function WritingABookPage() {
 
       {/* Footer */}
       <FooterMinimal />
+
+      <style jsx>{`
+        .waitlist-form {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+        
+        @media (min-width: 640px) {
+          .waitlist-form {
+            flex-direction: row;
+          }
+        }
+        
+        .email-input {
+          background: #0a0a0a;
+          border: 1px solid #374151;
+          border-radius: 0.5rem;
+          color: white;
+          padding: 0.75rem 1rem;
+          transition: all 0.2s ease;
+        }
+        
+        .email-input:focus {
+          outline: none;
+          border-color: #06b6d4;
+          box-shadow: 0 0 0 1px #06b6d4;
+        }
+        
+        .email-input::placeholder {
+          color: #9ca3af;
+        }
+        
+        .waitlist-btn {
+          background: linear-gradient(135deg, #0891b2, #7c3aed, #ec4899);
+          color: white;
+          font-weight: 500;
+          padding: 0.75rem 1.5rem;
+          border-radius: 0.5rem;
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .waitlist-btn:hover:not(:disabled) {
+          background: linear-gradient(135deg, #0e7490, #6d28d9, #db2777);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+          transform: translateY(-1px);
+        }
+        
+        .waitlist-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none;
+        }
+      `}</style>
     </div>
   )
 }
