@@ -96,12 +96,14 @@ export default function Navigation({ currentPage }: NavigationProps) {
             >
               Let's build together
             </Link>
-            <Link
-              href="#"
+            <a
+              href="https://calendly.com/abhishekmaddur04/30min"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-4 py-2 rounded-lg transition-all duration-200 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2"
             >
               30-Min Meeting
-            </Link>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -178,13 +180,15 @@ export default function Navigation({ currentPage }: NavigationProps) {
               >
                 📩 Let's Build Together
               </Link>
-              <Link
-                href="#"
+              <a
+                href="https://calendly.com/abhishekmaddur04/30min"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="block w-full text-center px-4 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-lg shadow transition-all duration-200"
                 onClick={closeMenu}
               >
                 📅 30-Min Meeting
-              </Link>
+              </a>
             </div>
           </div>
         )}
