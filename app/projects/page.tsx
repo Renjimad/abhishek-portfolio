@@ -78,7 +78,6 @@ const projects = [
 ]
 
 export default function ProjectsPage() {
-  const [isMindRackModalOpen, setIsMindRackModalOpen] = useState(false)
   const [isAnyWhereDoorModalOpen, setIsAnyWhereDoorModalOpen] = useState(false)
 
   const handleButtonHover = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -94,14 +93,6 @@ export default function ProjectsPage() {
     target.style.animation = "none"
     target.style.background = "#111827"
     target.style.boxShadow = "none"
-  }
-
-  const handleMindRackClick = () => {
-    setIsMindRackModalOpen(true)
-  }
-
-  const closeMindRackModal = () => {
-    setIsMindRackModalOpen(false)
   }
 
   const handleAnyWhereDoorClick = () => {
@@ -185,12 +176,12 @@ export default function ProjectsPage() {
                       Read Wireframe Story
                     </a>
                   ) : project.title === "MindRack" ? (
-                    <button
-                      onClick={handleMindRackClick}
+                    <Link
+                      href="/mindrack-case-study"
                       className="group inline-flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-bold px-6 py-3 rounded-lg transition-all duration-300 w-full text-center"
                     >
-                      <span>💭 Learn More</span>
-                    </button>
+                      <span>🧠 Learn More</span>
+                    </Link>
                   ) : project.title === "AnyWhereDoor" ? (
                     <button
                       onClick={handleAnyWhereDoorClick}
@@ -245,46 +236,6 @@ export default function ProjectsPage() {
 
       {/* Footer */}
       <Footer />
-
-      {/* MindRack Modal */}
-      {isMindRackModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 rounded-2xl p-8 max-w-md w-full mx-4 relative border border-gray-700">
-            <button
-              onClick={closeMindRackModal}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-            >
-              <X size={24} />
-            </button>
-            
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-white mb-6">Why I Paused MindRack</h3>
-              
-              <div className="text-gray-300 space-y-4 text-left">
-                <p>
-                  MindRack wasn't a failure. It was a vision ahead of its time.  
-                  I paused development not because it didn't work — but because I realized I needed to sharpen my product design skills and build stronger foundations first.
-                </p>
-                
-                <p>
-                  The idea lives on — and it's coming back, smarter and bolder.
-                </p>
-              </div>
-              
-              <div className="mt-8">
-                <a 
-                  href="https://yourdomain.com/mindrack-case-study" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-semibold transition-colors"
-                >
-                  Read the Case Study →
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* AnyWhereDoor Modal */}
       {isAnyWhereDoorModalOpen && (
